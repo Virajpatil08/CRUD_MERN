@@ -1,0 +1,51 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body class="bg-zinc-900 text-white flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-lg p-10 bg-zinc-800 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold tracking-tighter mb-5 text-center">Edit User</h1>
+        <form id="editForm" action="/update/<%= user._id%>" method="post" class="space-y-4">
+            <input class="w-full px-4 py-3 border border-zinc-600 rounded-lg bg-transparent text-white" type="text" placeholder="Name" value="<%= user.name %>" name="name">
+            <input class="w-full px-4 py-3 border border-zinc-600 rounded-lg bg-transparent text-white" type="text" name="email" value="<%= user.email %>" placeholder="Email">
+            <input class="w-full px-4 py-3 border border-zinc-600 rounded-lg bg-transparent text-white" type="text" name="image" value="<%= user.image %>" placeholder="Image URL">
+            <button type="submit" class="w-full py-3 bg-yellow-500 text-black font-semibold rounded-lg">Update User</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("editForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            fetch(this.action, {
+                method: "POST",
+                body: new FormData(this)
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "User Updated!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "/read";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error Updating User!",
+                        text: "Please try again.",
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2 @@
+we are going to create the users which will get stored in db and we will show in screen 
+and perform CRUD using MERN 

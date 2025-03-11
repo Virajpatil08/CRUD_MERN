@@ -1,0 +1,92 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="bg-zinc-900 text-white">
+    <div class="container mx-auto p-10">
+
+        <!-- Navigation -->
+        <div class="nav mb-10">
+            <a href="/" class="px-5 py-2 bg-blue-500 text-white rounded-lg shadow-lg hover:bg-blue-600 transition">
+                ⬅ Back to Home
+            </a>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-3xl font-bold tracking-tight mb-5">All Users</h1>
+
+        <div class="users flex flex-wrap gap-6">
+            <% if(users.length > 0) { %>
+                <% users.forEach(function(user){ %>
+                    <div class="user w-72 p-5 bg-zinc-800 rounded-xl shadow-lg transition hover:scale-105">
+                        <!-- User Image -->
+                        <div class="w-full h-52 rounded-lg bg-zinc-500 overflow-hidden">
+                            <img class="w-full h-full object-cover" src="<%= user.image %>" alt="User Image">
+                        </div>
+
+                        <!-- User Details -->
+                        <h3 class="text-2xl mt-3 font-semibold"><%= user.name %></h3>
+                        <h5 class="text-gray-300"><%= user.email %></h5>
+
+                        <!-- Action Buttons -->
+                        <div class="flex justify-between mt-4">
+                            <a href="/edit/<%= user._id %>"
+                                class="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                                ✏ Edit
+                            </a>
+                            <button class="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition delete-btn"
+                                data-userid="<%= user._id %>">
+                                🗑 Delete
+                            </button>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <h1 class="text-xl text-gray-400">No Users Yet.. Add Some Users</h1>
+            <% } %>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for Delete Confirmation -->
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.getAttribute('data-userid');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/delete/${userId}`, { method: "POST" })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire("Deleted!", "User has been removed.", "success")
+                                        .then(() => location.reload());
+                                } else {
+                                    Swal.fire("Error!", "Something went wrong.", "error");
+                                }
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
